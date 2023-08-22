@@ -1,2 +1,5 @@
 (library
  (name tiger))
+
+(ocamllex lexer)
+(ocamlyacc parser)
