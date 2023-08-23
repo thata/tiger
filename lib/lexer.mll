@@ -10,5 +10,9 @@ let digit = ['0'-'9']
 rule token = parse
     space+ { token lexbuf } (* 空白は読み飛ばす *)
   | digit+ { Parser.INT(int_of_string(Lexing.lexeme lexbuf)) }
+  | "+" { Parser.PLUS }
+  | "-" { Parser.MINUS }
+  | "*" { Parser.TIMES }
+  | "/" { Parser.DIVIDE }
   | eof { Parser.EOF }
   | _ { failwith ("invalid character " ^ (Lexing.lexeme lexbuf)) }

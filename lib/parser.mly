@@ -3,16 +3,8 @@
 
 // トークンの定義
 %token EOF
-%token <string> ID
 %token <int> INT
-%token <string> STRING
-%token COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK
-%token LBRACE RBRACE DOT
-%token PLUS MINUS TIMES DIVIDE EQ NEQ LT LE GT GE
-%token AND OR ASSIGN
-%token ARRAY IF THEN ELSE WHILE FOR TO DO LET IN END OF
-%token BREAK NIL
-%token FUNCTION VAR TYPE
+%token PLUS MINUS TIMES DIVIDE
 %token EOF
 
 // エントリーボイントの定義
@@ -20,8 +12,16 @@
 
 %type <Syntax.t> program
 
+%left PLUS MINUS
+%left TIMES DIVIDE
+
 // 文法規則の定義
 %%
 program: exp EOF { $1 }
 
-exp: INT { Syntax.IntExp($1) }
+exp:
+  INT { Syntax.IntExp($1) }
+| exp PLUS exp { Syntax.OpExp($1, Syntax.Plus, $3) }
+| exp MINUS exp { Syntax.OpExp($1, Syntax.Minus, $3) }
+| exp TIMES exp { Syntax.OpExp($1, Syntax.Times, $3) }
+| exp DIVIDE exp { Syntax.OpExp($1, Syntax.Divide, $3) }
