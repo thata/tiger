@@ -11,7 +11,6 @@ let letter = lower | upper
 let symbol = ['!' '#' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '_' '`' '|' '~']
 let printable = symbol | letter | digit
 
-(* 字句解析器 *)
 (* 字句解析の規則 *)
 rule token = parse
     space+ { token lexbuf } (* 空白は読み飛ばす *)
