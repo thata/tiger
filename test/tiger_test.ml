@@ -44,3 +44,105 @@ let () =
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()
+
+(* 整数 = *)
+let () =
+  let src = "0 = 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "0 = 1" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 整数 <> *)
+let () =
+  let src = "0 <> 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "0 <> 1" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 整数 < *)
+let () =
+  let src = "0 < 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "0 < 1" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "1 < 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 整数 > *)
+let () =
+  let src = "0 > 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "0 > 1" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "1 > 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 整数 <= *)
+let () =
+  let src = "0 <= 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "0 <= 1" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "1 <= 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 整数 >= *)
+let () =
+  let src = "0 >= 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "0 >= 1" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+let () =
+  let src = "1 >= 0" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()

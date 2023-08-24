@@ -19,6 +19,12 @@ rule token = parse
   | "-" { Parser.MINUS }
   | "*" { Parser.TIMES }
   | "/" { Parser.DIVIDE }
+  | "=" { Parser.EQ }
+  | "<>" { Parser.NEQ }
+  | "<" { Parser.LT }
+  | "<=" { Parser.LE }
+  | ">" { Parser.GT }
+  | ">=" { Parser.GE }
   | eof { Parser.EOF }
   (* 文字列リテラル *)
   | "\"" (printable | space)* "\"" {
