@@ -3,6 +3,7 @@ type val_t = IntVal of int | StringVal of string
 let rec f expr =
   match expr with
     Syntax.IntExp n -> IntVal(n)
+  | Syntax.StringExp s -> StringVal(s)
   | Syntax.OpExp(e1, op, e2) ->
       let v1 = match (f e1) with
         IntVal(n) -> n

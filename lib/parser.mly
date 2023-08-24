@@ -4,6 +4,7 @@
 // トークンの定義
 %token EOF
 %token <int> INT
+%token <string> STRING
 %token PLUS MINUS TIMES DIVIDE
 %token EOF
 
@@ -21,6 +22,7 @@ program: exp EOF { $1 }
 
 exp:
   INT { Syntax.IntExp($1) }
+| STRING { Syntax.StringExp($1) }
 | exp PLUS exp { Syntax.OpExp($1, Syntax.Plus, $3) }
 | exp MINUS exp { Syntax.OpExp($1, Syntax.Minus, $3) }
 | exp TIMES exp { Syntax.OpExp($1, Syntax.Times, $3) }

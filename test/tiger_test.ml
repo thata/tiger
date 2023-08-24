@@ -37,3 +37,10 @@ let () =
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()
+
+(* 文字列リテラル *)
+let () =
+  let src = "\"A\"" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
