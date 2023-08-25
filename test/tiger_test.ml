@@ -1,7 +1,10 @@
-let eval src =
+let eval_with_env src env =
   let buff = Lexing.from_string src in
   let expr = Tiger.Parser.program Tiger.Lexer.token buff in
-  Tiger.Eval.f expr
+  Tiger.Eval.f expr env
+
+let eval src =
+  eval_with_env src []
 
 (* 整数リテラル *)
 let () =
@@ -145,4 +148,11 @@ let () =
   let src = "1 >= 0" in
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 変数の参照 *)
+let () =
+  let src = "foo" in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval_with_env src [("foo", Tiger.Eval.IntVal(4649))]);
   print_newline ()

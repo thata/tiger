@@ -1,4 +1,6 @@
 type val_t = IntVal of int | StringVal of string
+type id = string
+type table = (id * val_t) list
 
 let compare op v1 v2 =
   match (v1, v2) with
@@ -22,10 +24,11 @@ let compare op v1 v2 =
       | _ -> failwith "invalid value")
   | _ -> failwith "invalid value"
 
-let rec f expr =
+let rec f expr env =
   match expr with
   | Syntax.IntExp n -> IntVal n
   | Syntax.StringExp s -> StringVal s
+  | Syntax.IdExp s -> List.assoc s env
   | Syntax.OpExp (e1, op, e2) -> (
       let getInt intVal =
         match intVal with
@@ -33,13 +36,13 @@ let rec f expr =
         | _ -> failwith "integer value expected"
       in
       match op with
-      | Syntax.PlusOp -> IntVal (getInt (f e1) + getInt (f e2))
-      | Syntax.MinusOp -> IntVal (getInt (f e1) - getInt (f e2))
-      | Syntax.TimesOp -> IntVal (getInt (f e1) * getInt (f e2))
-      | Syntax.DivideOp -> IntVal (getInt (f e1) / getInt (f e2))
+      | Syntax.PlusOp -> IntVal (getInt (f e1 env) + getInt (f e2 env))
+      | Syntax.MinusOp -> IntVal (getInt (f e1 env) - getInt (f e2 env))
+      | Syntax.TimesOp -> IntVal (getInt (f e1 env) * getInt (f e2 env))
+      | Syntax.DivideOp -> IntVal (getInt (f e1 env) / getInt (f e2 env))
       | Syntax.EqOp | Syntax.NeqOp | Syntax.LtOp | Syntax.GtOp | Syntax.LeOp
       | Syntax.GeOp ->
-          compare op (f e1) (f e2))
+          compare op (f e1 env) (f e2 env))
 
 let string_of_val v =
   match v with IntVal n -> string_of_int n | StringVal s -> s

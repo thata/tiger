@@ -5,12 +5,12 @@
 %token EOF
 %token <int> INT
 %token <string> STRING
+%token <string> ID
 %token PLUS MINUS TIMES DIVIDE
 %token EQ NEQ LT LE GT GE
 %token EOF
 
 // あとで使う
-// %token <string> ID
 // %token COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK
 // %token LBRACE RBRACE DOT
 // %token AND OR ASSIGN
@@ -34,6 +34,7 @@ program: exp EOF { $1 }
 exp:
   INT { Syntax.IntExp($1) }
 | STRING { Syntax.StringExp($1) }
+| ID { Syntax.IdExp($1) }
 | exp PLUS exp { Syntax.OpExp($1, Syntax.PlusOp, $3) }
 | exp MINUS exp { Syntax.OpExp($1, Syntax.MinusOp, $3) }
 | exp TIMES exp { Syntax.OpExp($1, Syntax.TimesOp, $3) }

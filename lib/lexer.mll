@@ -15,6 +15,13 @@ let printable = symbol | letter | digit
 rule token = parse
     space+ { token lexbuf } (* 空白は読み飛ばす *)
   | digit+ { Parser.INT(int_of_string(Lexing.lexeme lexbuf)) }
+  (* 文字列リテラル *)
+  | "\"" (printable | space)* "\"" {
+      (* 両端のダブルクォートを取り除く *)
+      let str = String.sub (Lexing.lexeme lexbuf) 1 ((String.length (Lexing.lexeme lexbuf)) - 2) in
+      Parser.STRING(str)
+    }
+  | letter (letter|digit)* { Parser.ID(Lexing.lexeme lexbuf) }
   | "+" { Parser.PLUS }
   | "-" { Parser.MINUS }
   | "*" { Parser.TIMES }
@@ -26,10 +33,4 @@ rule token = parse
   | ">" { Parser.GT }
   | ">=" { Parser.GE }
   | eof { Parser.EOF }
-  (* 文字列リテラル *)
-  | "\"" (printable | space)* "\"" {
-      (* 両端のダブルクォートを取り除く *)
-      let str = String.sub (Lexing.lexeme lexbuf) 1 ((String.length (Lexing.lexeme lexbuf)) - 2) in
-      Parser.STRING(str)
-    }
   | _ { failwith ("invalid character " ^ (Lexing.lexeme lexbuf)) }
