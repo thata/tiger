@@ -2,49 +2,43 @@ type val_t = IntVal of int | StringVal of string
 type id = string
 type table = (id * val_t) list
 
-let compare op v1 v2 =
-  match (v1, v2) with
-  | IntVal n1, IntVal n2 -> (
-      match op with
-      | Syntax.EqOp -> IntVal (if n1 = n2 then 1 else 0)
-      | Syntax.NeqOp -> IntVal (if n1 <> n2 then 1 else 0)
-      | Syntax.LtOp -> IntVal (if n1 < n2 then 1 else 0)
-      | Syntax.GtOp -> IntVal (if n1 > n2 then 1 else 0)
-      | Syntax.LeOp -> IntVal (if n1 <= n2 then 1 else 0)
-      | Syntax.GeOp -> IntVal (if n1 >= n2 then 1 else 0)
-      | _ -> failwith "invalid value")
-  | StringVal s1, StringVal s2 -> (
-      match op with
-      | Syntax.EqOp -> IntVal (if s1 = s2 then 1 else 0)
-      | Syntax.NeqOp -> IntVal (if s1 <> s2 then 1 else 0)
-      | Syntax.LtOp -> IntVal (if s1 < s2 then 1 else 0)
-      | Syntax.GtOp -> IntVal (if s1 > s2 then 1 else 0)
-      | Syntax.LeOp -> IntVal (if s1 <= s2 then 1 else 0)
-      | Syntax.GeOp -> IntVal (if s1 >= s2 then 1 else 0)
-      | _ -> failwith "invalid value")
-  | _ -> failwith "invalid value"
-
-let rec f expr env =
+let rec f expr env: val_t * table =
   match expr with
-  | Syntax.IntExp n -> IntVal n
-  | Syntax.StringExp s -> StringVal s
-  | Syntax.IdExp s -> List.assoc s env
-  | Syntax.OpExp (e1, op, e2) -> (
-      let getInt intVal =
-        match intVal with
-        | IntVal n -> n
-        | _ -> failwith "integer value expected"
-      in
+  | Syntax.IntExp n -> (IntVal n, env)
+  | Syntax.StringExp s -> (StringVal s, env)
+  | Syntax.IdExp s -> (List.assoc s env, env)
+  | Syntax.LetExp (VarDec(id, e1), e2) ->
+      let (v1, _) = f e1 env in
+      let new_env: table = (id, v1) :: env in
+      f e2 new_env
+  | Syntax.OpExp (e1, op, e2) ->
       match op with
-      | Syntax.PlusOp -> IntVal (getInt (f e1 env) + getInt (f e2 env))
-      | Syntax.MinusOp -> IntVal (getInt (f e1 env) - getInt (f e2 env))
-      | Syntax.TimesOp -> IntVal (getInt (f e1 env) * getInt (f e2 env))
-      | Syntax.DivideOp -> IntVal (getInt (f e1 env) / getInt (f e2 env))
-      | Syntax.EqOp | Syntax.NeqOp | Syntax.LtOp | Syntax.GtOp | Syntax.LeOp
-      | Syntax.GeOp ->
-          compare op (f e1 env) (f e2 env))
-
-let string_of_val v =
+      | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp ->
+          calc op e1 e2 env
+      | Syntax.EqOp | Syntax.NeqOp | Syntax.LtOp | Syntax.GtOp | Syntax.LeOp | Syntax.GeOp ->
+          compare op e1 e2 env
+and calc op e1 e2 env =
+  let v1, env = f e1 env in
+  let v2, env = f e2 env in
+  match op, v1, v2 with
+  | Syntax.PlusOp, IntVal v1, IntVal v2 -> IntVal(v1 + v2), env
+  | Syntax.MinusOp, IntVal v1, IntVal v2 -> IntVal(v1 - v2), env
+  | Syntax.TimesOp, IntVal v1, IntVal v2 -> IntVal(v1 * v2), env
+  | Syntax.DivideOp, IntVal v1, IntVal v2 -> IntVal(v1 / v2), env
+  | _ -> failwith "type error"
+and compare op e1 e2 env =
+  let v1, env = f e1 env in
+  let v2, env = f e2 env in
+  match op, v1, v2 with
+  | Syntax.EqOp, IntVal v1, IntVal v2 -> if v1 = v2 then IntVal(1), env else IntVal(0), env
+  | Syntax.NeqOp, IntVal v1, IntVal v2 -> if v1 <> v2 then IntVal(1), env else IntVal(0), env
+  | Syntax.LtOp, IntVal v1, IntVal v2 -> if v1 < v2 then IntVal(1), env else IntVal(0), env
+  | Syntax.GtOp, IntVal v1, IntVal v2 -> if v1 > v2 then IntVal(1), env else IntVal(0), env
+  | Syntax.LeOp, IntVal v1, IntVal v2 -> if v1 <= v2 then IntVal(1), env else IntVal(0), env
+  | Syntax.GeOp, IntVal v1, IntVal v2 -> if v1 >= v2 then IntVal(1), env else IntVal(0), env
+  | Syntax.EqOp, StringVal s1, StringVal s2 -> if s1 = s2 then IntVal(1), env else IntVal(0), env
+  | Syntax.NeqOp, StringVal s1, StringVal s2 -> if s1 <> s2 then IntVal(1), env else IntVal(0), env
+  | _ -> failwith "type error"
+and string_of_val v =
   match v with IntVal n -> string_of_int n | StringVal s -> s
-
-let print_val v = print_string (string_of_val v)
+and print_val v = print_string (string_of_val v)

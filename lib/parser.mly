@@ -8,15 +8,17 @@
 %token <string> ID
 %token PLUS MINUS TIMES DIVIDE
 %token EQ NEQ LT LE GT GE
+%token LET IN END
+%token VAR ASSIGN
 %token EOF
 
 // あとで使う
 // %token COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK
 // %token LBRACE RBRACE DOT
-// %token AND OR ASSIGN
-// %token ARRAY IF THEN ELSE WHILE FOR TO DO LET IN END OF
+// %token AND OR
+// %token ARRAY IF THEN ELSE WHILE FOR TO DO OF
 // %token BREAK NIL
-// %token FUNCTION VAR TYPE
+// %token FUNCTION TYPE
 
 // エントリーボイントの定義
 %start program
@@ -45,3 +47,7 @@ exp:
 | exp LE exp { Syntax.OpExp($1, Syntax.LeOp, $3) }
 | exp GT exp { Syntax.OpExp($1, Syntax.GtOp, $3) }
 | exp GE exp { Syntax.OpExp($1, Syntax.GeOp, $3) }
+| LET dec IN exp END { Syntax.LetExp($2, $4) }
+
+dec:
+  VAR ID ASSIGN exp { Syntax.VarDec($2, $4) }
