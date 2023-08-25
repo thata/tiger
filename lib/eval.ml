@@ -7,10 +7,12 @@ let rec f expr env: val_t * table =
   | Syntax.IntExp n -> (IntVal n, env)
   | Syntax.StringExp s -> (StringVal s, env)
   | Syntax.IdExp s -> (List.assoc s env, env)
-  | Syntax.LetExp (VarDec(id, e1), e2) ->
-      let (v1, _) = f e1 env in
-      let new_env: table = (id, v1) :: env in
-      f e2 new_env
+  | Syntax.LetExp (decs, body) ->
+      let new_env = List.fold_left
+                      (fun env dec -> eval_dec dec env)
+                      env
+                      decs
+      in f body new_env
   | Syntax.OpExp (e1, op, e2) ->
       match op with
       | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp ->
@@ -39,6 +41,11 @@ and compare op e1 e2 env =
   | Syntax.EqOp, StringVal s1, StringVal s2 -> if s1 = s2 then IntVal(1), env else IntVal(0), env
   | Syntax.NeqOp, StringVal s1, StringVal s2 -> if s1 <> s2 then IntVal(1), env else IntVal(0), env
   | _ -> failwith "type error"
+and eval_dec dec env =
+    match dec with
+    | Syntax.VarDec (id, e) ->
+        let (v, _) = f e env in
+        (id, v) :: env
 and string_of_val v =
   match v with IntVal n -> string_of_int n | StringVal s -> s
 and print_val v = print_string (string_of_val v)

@@ -160,7 +160,14 @@ let () =
 
 (* let による変数宣言 *)
 let () =
-  let src = "let var foo := 100 in foo + foo end" in
-  print_string "result: ";
+  let src = {|
+    let
+      var a := 10
+      var b := 20
+    in
+      a + b
+    end
+  |}
+  in print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()

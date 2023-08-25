@@ -47,7 +47,11 @@ exp:
 | exp LE exp { Syntax.OpExp($1, Syntax.LeOp, $3) }
 | exp GT exp { Syntax.OpExp($1, Syntax.GtOp, $3) }
 | exp GE exp { Syntax.OpExp($1, Syntax.GeOp, $3) }
-| LET dec IN exp END { Syntax.LetExp($2, $4) }
+| LET decs IN exp END { Syntax.LetExp($2, $4) }
 
 dec:
   VAR ID ASSIGN exp { Syntax.VarDec($2, $4) }
+
+decs:
+  { [] } // 空の場合
+| decs dec { $1 @ [$2] }
