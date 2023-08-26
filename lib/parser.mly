@@ -9,7 +9,8 @@
 %token PLUS MINUS TIMES DIVIDE
 %token EQ NEQ LT LE GT GE
 %token LET IN END
-%token VAR ASSIGN
+%token VAR FUNCTION ASSIGN
+%token LPAREN RPAREN
 %token EOF
 
 // あとで使う
@@ -48,9 +49,11 @@ exp:
 | exp GT exp { Syntax.OpExp($1, Syntax.GtOp, $3) }
 | exp GE exp { Syntax.OpExp($1, Syntax.GeOp, $3) }
 | LET decs IN exp END { Syntax.LetExp($2, $4) }
+| ID LPAREN RPAREN { Syntax.CallExp($1, []) }
 
 dec:
   VAR ID ASSIGN exp { Syntax.VarDec($2, $4) }
+| FUNCTION ID LPAREN RPAREN EQ exp { Syntax.FunctionDec($2, $6) }
 
 decs:
   { [] } // 空の場合

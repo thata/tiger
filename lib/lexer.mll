@@ -18,6 +18,7 @@ rule token = parse
   | "in" { Parser.IN }
   | "end" { Parser.END }
   | "var" { Parser.VAR }
+  | "function" { Parser.FUNCTION }
   | "+" { Parser.PLUS }
   | "-" { Parser.MINUS }
   | "*" { Parser.TIMES }
@@ -29,6 +30,8 @@ rule token = parse
   | ">" { Parser.GT }
   | ">=" { Parser.GE }
   | ":=" { Parser.ASSIGN }
+  | "(" { Parser.LPAREN }
+  | ")" { Parser.RPAREN }
   | digit+ { Parser.INT(int_of_string(Lexing.lexeme lexbuf)) }
   | letter (letter|digit)* { Parser.ID(Lexing.lexeme lexbuf) }
   | "\"" (printable | space)* "\"" {

@@ -1,6 +1,6 @@
-type val_t = IntVal of int | StringVal of string
 type id = string
-type table = (id * val_t) list
+and table = (id * val_t) list
+and val_t = IntVal of int | StringVal of string | FunctionVal of (val_t list -> table -> val_t * table)
 
 let rec f expr env: val_t * table =
   match expr with
@@ -13,12 +13,27 @@ let rec f expr env: val_t * table =
                       env
                       decs
       in f body new_env
+  | Syntax.CallExp (id, args) ->
+    let func = List.assoc id env in
+    let args, env = List.fold_left
+                      (fun (args, env) arg ->
+                        let v, env = f arg env in
+                        v :: args, env)
+                      ([], env)
+                      args
+    in
+    let f0 = match func with
+      | FunctionVal f -> f
+      | _ -> failwith "type error"
+    in
+    f0 args env
   | Syntax.OpExp (e1, op, e2) ->
       match op with
       | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp ->
           calc op e1 e2 env
       | Syntax.EqOp | Syntax.NeqOp | Syntax.LtOp | Syntax.GtOp | Syntax.LeOp | Syntax.GeOp ->
           compare op e1 e2 env
+
 and calc op e1 e2 env =
   let v1, env = f e1 env in
   let v2, env = f e2 env in
@@ -28,7 +43,8 @@ and calc op e1 e2 env =
   | Syntax.TimesOp, IntVal v1, IntVal v2 -> IntVal(v1 * v2), env
   | Syntax.DivideOp, IntVal v1, IntVal v2 -> IntVal(v1 / v2), env
   | _ -> failwith "type error"
-and compare op e1 e2 env =
+
+  and compare op e1 e2 env =
   let v1, env = f e1 env in
   let v2, env = f e2 env in
   match op, v1, v2 with
@@ -41,11 +57,20 @@ and compare op e1 e2 env =
   | Syntax.EqOp, StringVal s1, StringVal s2 -> if s1 = s2 then IntVal(1), env else IntVal(0), env
   | Syntax.NeqOp, StringVal s1, StringVal s2 -> if s1 <> s2 then IntVal(1), env else IntVal(0), env
   | _ -> failwith "type error"
-and eval_dec dec env =
+
+  and eval_dec dec env =
     match dec with
     | Syntax.VarDec (id, e) ->
         let (v, _) = f e env in
         (id, v) :: env
+    | Syntax.FunctionDec (id, e) ->
+        let func = FunctionVal (fun _ env -> f e env) in
+        (id, func) :: env
+
 and string_of_val v =
-  match v with IntVal n -> string_of_int n | StringVal s -> s
+  match v with
+    IntVal n -> string_of_int n
+  | StringVal s -> s
+  | FunctionVal _ -> "<fun>"
+
 and print_val v = print_string (string_of_val v)
