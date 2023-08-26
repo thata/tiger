@@ -36,7 +36,7 @@ program: exp EOF { $1 }
 exp:
   INT { Syntax.IntExp($1) }
 | STRING { Syntax.StringExp($1) }
-| ID { Syntax.IdExp($1) }
+| ID { Syntax.VarExp($1) }
 | exp PLUS exp { Syntax.OpExp($1, Syntax.PlusOp, $3) }
 | exp MINUS exp { Syntax.OpExp($1, Syntax.MinusOp, $3) }
 | exp TIMES exp { Syntax.OpExp($1, Syntax.TimesOp, $3) }

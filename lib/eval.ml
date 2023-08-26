@@ -6,7 +6,7 @@ let rec f expr env: val_t * table =
   match expr with
   | Syntax.IntExp n -> (IntVal n, env)
   | Syntax.StringExp s -> (StringVal s, env)
-  | Syntax.IdExp s -> (List.assoc s env, env)
+  | Syntax.VarExp s -> (List.assoc s env, env)
   | Syntax.LetExp (decs, body) ->
       let new_env = List.fold_left
                       (fun env dec -> eval_dec dec env)
