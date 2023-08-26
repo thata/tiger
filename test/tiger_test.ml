@@ -184,7 +184,7 @@ let () =
   Tiger.Eval.print_val (eval src);
   print_newline ()
 
-(* 定義済みの関数の呼び出し *)
+(* 引数なしの関数の呼び出し *)
 let () =
   let src = {|
     let
@@ -194,7 +194,6 @@ let () =
     end
   |}
   in
-  let env = [("foo", Tiger.Eval.FunctionVal(fun _ env -> (Tiger.Eval.IntVal(1234), env)))] in
   print_string "result: ";
-  Tiger.Eval.print_val (eval_with_env src env);
+  Tiger.Eval.print_val (eval src);
   print_newline ()
