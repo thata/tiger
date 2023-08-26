@@ -197,3 +197,17 @@ let () =
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()
+
+(* 引数ありの関数の呼び出し *)
+let () =
+  let src = {|
+    let
+      function square(n:int) = n * n
+    in
+      square(10)
+    end
+  |}
+  in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()

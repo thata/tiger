@@ -10,7 +10,7 @@
 %token EQ NEQ LT LE GT GE
 %token LET IN END
 %token VAR FUNCTION ASSIGN
-%token LPAREN RPAREN
+%token LPAREN RPAREN COMMA COLON
 %token EOF
 
 // あとで使う
@@ -49,11 +49,24 @@ exp:
 | exp GT exp { Syntax.OpExp($1, Syntax.GtOp, $3) }
 | exp GE exp { Syntax.OpExp($1, Syntax.GeOp, $3) }
 | LET decs IN exp END { Syntax.LetExp($2, $4) }
-| ID LPAREN RPAREN { Syntax.CallExp($1, []) }
+| ID LPAREN args RPAREN { Syntax.CallExp($1, $3) }
+
+args:
+  { [] } // 空の場合
+| exp { [$1] }
+| args COMMA exp { $1 @ [$3] }
+
+tyfield:
+  ID COLON ID { Syntax.Field($1, $3) }
+
+tyfields:
+  { [] } // 空の場合
+| tyfield { [$1] }
+| tyfields COMMA tyfield { $1 @ [$3] }
 
 dec:
   VAR ID ASSIGN exp { Syntax.VarDec($2, $4) }
-| FUNCTION ID LPAREN RPAREN EQ exp { Syntax.FunctionDec($2, $6) }
+| FUNCTION ID LPAREN tyfields RPAREN EQ exp { Syntax.FunctionDec($2, $4, $7) }
 
 decs:
   { [] } // 空の場合

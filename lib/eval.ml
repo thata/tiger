@@ -1,6 +1,6 @@
 type id = string
 and table = (id * val_t) list
-and val_t = IntVal of int | StringVal of string | FunctionVal of (val_t list -> table -> val_t * table)
+and val_t = IntVal of int | StringVal of string | FunctionDec of id list * Syntax.t
 
 let rec f expr env: val_t * table =
   match expr with
@@ -14,19 +14,21 @@ let rec f expr env: val_t * table =
                       decs
       in f body new_env
   | Syntax.CallExp (id, args) ->
-    let func = List.assoc id env in
-    let args, env = List.fold_left
-                      (fun (args, env) arg ->
-                        let v, env = f arg env in
-                        v :: args, env)
-                      ([], env)
-                      args
-    in
-    let f0 = match func with
-      | FunctionVal f -> f
-      | _ -> failwith "type error"
-    in
-    f0 args env
+      (let func = List.assoc id env in
+      (* Copilotが生成した謎のコード。ちゃんと動くからすごい *)
+      match func with
+        | FunctionDec (field_names, body) ->
+            let rec get_args (args:Syntax.t list) (env:table) (field_names:id list) =
+              match args, field_names with
+              | [], [] -> env
+              | arg::args, field_name::field_names ->
+                  let v, env = f arg env in
+                  get_args args ((field_name, v)::env) field_names
+              | _ -> failwith "type error"
+            in
+            let new_env = get_args args env field_names in
+            f body new_env
+        | _ -> failwith "type error")
   | Syntax.OpExp (e1, op, e2) ->
       match op with
       | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp ->
@@ -63,14 +65,20 @@ and calc op e1 e2 env =
     | Syntax.VarDec (id, e) ->
         let (v, _) = f e env in
         (id, v) :: env
-    | Syntax.FunctionDec (id, e) ->
-        let func = FunctionVal (fun _ env -> f e env) in
+    | Syntax.FunctionDec (id, fields, body) ->
+        let rec get_field_names (fields:Syntax.field_t list) =
+          match fields with
+          | [] -> []
+          | Field (id, _) :: rest -> id :: get_field_names rest
+        in
+        let field_names = get_field_names fields in
+        let func = FunctionDec (field_names, body) in
         (id, func) :: env
 
 and string_of_val v =
   match v with
     IntVal n -> string_of_int n
   | StringVal s -> s
-  | FunctionVal _ -> "<fun>"
+  | FunctionDec _ -> "<fun>"
 
 and print_val v = print_string (string_of_val v)

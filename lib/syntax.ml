@@ -22,6 +22,7 @@ and op_t =
 
 and dec_t =
   | VarDec of symbol * t (* 変数宣言 *)
-  | FunctionDec of symbol * t (* 関数宣言 *)
+  | FunctionDec of symbol * field_t list * t (* 関数宣言 *)
 
-
+(* 関数の引数 *)
+and field_t = Field of symbol * symbol

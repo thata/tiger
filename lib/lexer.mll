@@ -32,6 +32,8 @@ rule token = parse
   | ":=" { Parser.ASSIGN }
   | "(" { Parser.LPAREN }
   | ")" { Parser.RPAREN }
+  | "," { Parser.COMMA }
+  | ":" { Parser.COLON }
   | digit+ { Parser.INT(int_of_string(Lexing.lexeme lexbuf)) }
   | letter (letter|digit)* { Parser.ID(Lexing.lexeme lexbuf) }
   | "\"" (printable | space)* "\"" {
