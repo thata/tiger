@@ -15,7 +15,6 @@ let rec f expr env: val_t * table =
       in f body new_env
   | Syntax.CallExp (id, args) ->
       (let func = List.assoc id env in
-      (* Copilotが生成した謎のコード。ちゃんと動くからすごい *)
       match func with
         | FunctionDec (field_names, body) ->
             let rec get_args (args:Syntax.t list) (env:table) (field_names:id list) =
