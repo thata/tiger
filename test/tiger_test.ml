@@ -171,3 +171,15 @@ let () =
   in print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()
+
+(* 空の let *)
+let () =
+  let src = {|
+    let
+    in
+      99
+    end
+  |}
+  in print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
