@@ -5,7 +5,18 @@ let eval_with_env src env =
   result
 
 let eval src =
-  eval_with_env src []
+  eval_with_env src [
+    (* 組み込み関数 print(s: string) *)
+    ("print", Tiger.Eval.BuiltInFunction(
+      fun args _ ->
+        match args with
+        | [Tiger.Eval.StringVal(s)] ->
+          print_string s;
+          (* NOTE: 本当は unit を返したいけどまだ未実装なので 0 を返してる *)
+          Tiger.Eval.IntVal(0)
+        | _ -> failwith "invalid arguments"
+    ))
+  ]
 
 (* 整数リテラル *)
 let () =
@@ -210,4 +221,59 @@ let () =
   in
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 組み込み関数 double の呼び出し *)
+let () =
+  let src = {|
+    let
+    in
+      double(10)
+    end
+  |}
+  in
+  print_string "result: ";
+  let env = [
+    ("double", Tiger.Eval.BuiltInFunction (
+      fun args (_:Tiger.Eval.table) ->
+        match args with
+        | [Tiger.Eval.IntVal(n)] -> Tiger.Eval.IntVal(n * 2)
+        | _ -> failwith "invalid arguments"
+    ));
+  ] in
+  Tiger.Eval.print_val (eval_with_env src env);
+  print_newline ()
+
+(* 組み込み関数 foo の呼び出し *)
+let () =
+  let src = {|
+    let
+    in
+      foo(4, 6, 4, 9)
+    end
+  |}
+  in
+  print_string "result: ";
+  let env = [
+    (* (args[0] * 1000) + (args[1] * 100) + (args[2] * 10) + args[3] *)
+    ("foo", Tiger.Eval.BuiltInFunction (
+      fun args (_:Tiger.Eval.table) ->
+        match args with
+        | [Tiger.Eval.IntVal(a); Tiger.Eval.IntVal(b); Tiger.Eval.IntVal(c); Tiger.Eval.IntVal(d)] ->
+          Tiger.Eval.IntVal(a * 1000 + b * 100 + c * 10 + d)
+        | _ -> failwith "invalid arguments"
+    ));
+  ] in
+  Tiger.Eval.print_val (eval_with_env src env);
+  print_newline ()
+
+(* 組み込み関数 print(s: string) の呼び出し *)
+let () =
+  let src = {|
+    let in
+      print("Hello World!!")
+    end
+  |}
+  in
+  ignore(eval src);
   print_newline ()

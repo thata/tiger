@@ -1,6 +1,10 @@
 type id = string
 and table = (id * val_t) list
-and val_t = IntVal of int | StringVal of string | FunctionDec of id list * Syntax.t
+and val_t =
+    IntVal of int
+  | StringVal of string
+  | FunctionDec of id list * Syntax.t
+  | BuiltInFunction of (val_t list -> table -> val_t)
 
 let rec f expr env: val_t * table =
   match expr with
@@ -27,6 +31,17 @@ let rec f expr env: val_t * table =
             in
             let new_env = get_args args env field_names in
             f body new_env
+        | BuiltInFunction builtin_func ->
+            (let rec eval_args args env =
+              match args with
+              | [] -> ([], env)
+              | arg::args ->
+                  let v, env = f arg env in
+                  let vs, env = eval_args args env in
+                  (v::vs, env)
+            in
+            let args, env = eval_args args env in
+            (builtin_func args env, env))
         | _ -> failwith "type error")
   | Syntax.OpExp (e1, op, e2) ->
       match op with
@@ -79,5 +94,6 @@ and string_of_val v =
     IntVal n -> string_of_int n
   | StringVal s -> s
   | FunctionDec _ -> "<fun>"
+  | BuiltInFunction _ -> "<builtin>"
 
 and print_val v = print_string (string_of_val v)
