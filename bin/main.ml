@@ -14,6 +14,6 @@ let () =
         | _ -> failwith "invalid arguments"
     ))
   ] in
-  print_string "\n#=> ";
+  print_string "#=> ";
   Tiger.Eval.print_val result;
   print_newline ()

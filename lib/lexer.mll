@@ -36,10 +36,15 @@ rule token = parse
   | ":" { Parser.COLON }
   | digit+ { Parser.INT(int_of_string(Lexing.lexeme lexbuf)) }
   | letter (letter|digit)* { Parser.ID(Lexing.lexeme lexbuf) }
-  | "\"" (printable | space)* "\"" {
-      (* 文字列リテラル *)
-      let str = String.sub (Lexing.lexeme lexbuf) 1 ((String.length (Lexing.lexeme lexbuf)) - 2) in
-      Parser.STRING(str)
-    }
+  | "\"" { string_literal (Buffer.create 0) lexbuf }
   | eof { Parser.EOF }
   | _ { failwith ("invalid character " ^ (Lexing.lexeme lexbuf)) }
+
+and string_literal buf = parse
+    "\\t" { Buffer.add_string buf "\x09"; string_literal buf lexbuf }
+  | "\\n" { Buffer.add_string buf "\x0A"; string_literal buf lexbuf }
+  | "\\\\" { Buffer.add_string buf "\x5C"; string_literal buf lexbuf }
+  | "\\\"" { Buffer.add_string buf "\x22"; string_literal buf lexbuf }
+  | (printable | ' ')+ { Buffer.add_string buf (Lexing.lexeme lexbuf); string_literal buf lexbuf }
+  | "\"" { Parser.STRING(Buffer.contents buf) }
+  | _ { string_literal buf lexbuf }
