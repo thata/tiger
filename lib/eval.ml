@@ -11,13 +11,13 @@ let rec f expr env: val_t * table =
   | Syntax.IntExp n -> (IntVal n, env)
   | Syntax.StringExp s -> (StringVal s, env)
   | Syntax.VarExp s -> (List.assoc s env, env)
-  | Syntax.LetExp (decs, body) ->
+  | Syntax.LetExp { decs; body } ->
       let new_env = List.fold_left
                       (fun env dec -> eval_dec dec env)
                       env
                       decs
       in f body new_env
-  | Syntax.CallExp (id, args) ->
+  | Syntax.CallExp { id; args } ->
       (let func = List.assoc id env in
       match func with
         | FunctionDec (field_names, body) ->
@@ -43,12 +43,12 @@ let rec f expr env: val_t * table =
             let args, env = eval_args args env in
             (builtin_func args env, env))
         | _ -> failwith "type error")
-  | Syntax.OpExp (e1, op, e2) ->
+    | Syntax.OpExp { left; op; right } ->
       match op with
       | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp ->
-          calc op e1 e2 env
+          calc op left right env
       | Syntax.EqOp | Syntax.NeqOp | Syntax.LtOp | Syntax.GtOp | Syntax.LeOp | Syntax.GeOp ->
-          compare op e1 e2 env
+          compare op left right env
 
 and calc op e1 e2 env =
   let v1, env = f e1 env in

@@ -15,10 +15,10 @@ and op_t =
   and t =
   | IntExp of int (* 整数 *)
   | StringExp of string (* 文字列 *)
-  | LetExp of dec_t list * t
+  | LetExp of { decs: dec_t list; body: t }
   | VarExp of string
-  | CallExp of string * t list (* 関数呼び出し *)
-  | OpExp of t * op_t * t (* 二項演算子 *)
+  | CallExp of { id: string; args: t list } (* 関数呼び出し *)
+  | OpExp of { left: t; op: op_t; right: t } (* 二項演算子 *)
 
 and dec_t =
   | VarDec of symbol * t (* 変数宣言 *)

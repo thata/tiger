@@ -38,18 +38,18 @@ exp:
   INT { Syntax.IntExp($1) }
 | STRING { Syntax.StringExp($1) }
 | ID { Syntax.VarExp($1) }
-| exp PLUS exp { Syntax.OpExp($1, Syntax.PlusOp, $3) }
-| exp MINUS exp { Syntax.OpExp($1, Syntax.MinusOp, $3) }
-| exp TIMES exp { Syntax.OpExp($1, Syntax.TimesOp, $3) }
-| exp DIVIDE exp { Syntax.OpExp($1, Syntax.DivideOp, $3) }
-| exp EQ exp { Syntax.OpExp($1, Syntax.EqOp, $3) }
-| exp NEQ exp { Syntax.OpExp($1, Syntax.NeqOp, $3) }
-| exp LT exp { Syntax.OpExp($1, Syntax.LtOp, $3) }
-| exp LE exp { Syntax.OpExp($1, Syntax.LeOp, $3) }
-| exp GT exp { Syntax.OpExp($1, Syntax.GtOp, $3) }
-| exp GE exp { Syntax.OpExp($1, Syntax.GeOp, $3) }
-| LET decs IN exp END { Syntax.LetExp($2, $4) }
-| ID LPAREN args RPAREN { Syntax.CallExp($1, $3) }
+| exp PLUS exp { Syntax.OpExp { left = $1; op = Syntax.PlusOp; right = $3} }
+| exp MINUS exp { Syntax.OpExp { left = $1; op = Syntax.MinusOp; right = $3} }
+| exp TIMES exp { Syntax.OpExp { left = $1; op = Syntax.TimesOp; right = $3} }
+| exp DIVIDE exp { Syntax.OpExp { left = $1; op = Syntax.DivideOp; right = $3} }
+| exp EQ exp { Syntax.OpExp { left = $1; op = Syntax.EqOp; right = $3} }
+| exp NEQ exp { Syntax.OpExp { left = $1; op = Syntax.NeqOp; right = $3} }
+| exp LT exp { Syntax.OpExp { left = $1; op = Syntax.LtOp; right = $3} }
+| exp LE exp { Syntax.OpExp { left = $1; op = Syntax.LeOp; right = $3} }
+| exp GT exp { Syntax.OpExp { left = $1; op = Syntax.GtOp; right = $3} }
+| exp GE exp { Syntax.OpExp { left = $1; op = Syntax.GeOp; right = $3} }
+| LET decs IN exp END { Syntax.LetExp { decs = $2; body = $4 } }
+| ID LPAREN args RPAREN { Syntax.CallExp { id = $1; args = $3 } }
 
 args:
   { [] } // 空の場合
