@@ -1,3 +1,4 @@
+(* 10番目のフィボナッチ数を返す *)
 let
   function fib(n:int) =
     if n < 2 then n

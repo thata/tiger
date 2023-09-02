@@ -14,6 +14,7 @@ let printable = symbol | letter | digit
 (* 字句解析の規則 *)
 rule token = parse
     space+ { token lexbuf } (* 空白は読み飛ばす *)
+  | "(*" { comment lexbuf } (* コメントは読み飛ばす *)
   | "let" { Parser.LET }
   | "in" { Parser.IN }
   | "end" { Parser.END }
@@ -42,6 +43,10 @@ rule token = parse
   | "\"" { string_literal (Buffer.create 0) lexbuf }
   | eof { Parser.EOF }
   | _ { failwith ("invalid character " ^ (Lexing.lexeme lexbuf)) }
+
+and comment = parse
+    "*)" { token lexbuf }
+  | _ { comment lexbuf }
 
 and string_literal buf = parse
     "\\t" { Buffer.add_string buf "\x09"; string_literal buf lexbuf }
