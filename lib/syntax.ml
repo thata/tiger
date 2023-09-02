@@ -19,6 +19,7 @@ and op_t =
   | VarExp of string
   | CallExp of { id: string; args: t list } (* 関数呼び出し *)
   | OpExp of { left: t; op: op_t; right: t } (* 二項演算子 *)
+  | IfExp of { test: t; then': t; else': t option } (* if文 *)
 
 and dec_t =
   | VarDec of symbol * t (* 変数宣言 *)

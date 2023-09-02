@@ -19,6 +19,9 @@ rule token = parse
   | "end" { Parser.END }
   | "var" { Parser.VAR }
   | "function" { Parser.FUNCTION }
+  | "if" { Parser.IF }
+  | "then" { Parser.THEN }
+  | "else" { Parser.ELSE }
   | "+" { Parser.PLUS }
   | "-" { Parser.MINUS }
   | "*" { Parser.TIMES }

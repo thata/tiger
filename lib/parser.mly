@@ -8,7 +8,7 @@
 %token <string> ID
 %token PLUS MINUS TIMES DIVIDE
 %token EQ NEQ LT LE GT GE
-%token LET IN END
+%token LET IN END IF THEN ELSE
 %token VAR FUNCTION ASSIGN
 %token LPAREN RPAREN COMMA COLON
 %token EOF
@@ -17,7 +17,7 @@
 // %token COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK
 // %token LBRACE RBRACE DOT
 // %token AND OR
-// %token ARRAY IF THEN ELSE WHILE FOR TO DO OF
+// %token ARRAY WHILE FOR TO DO OF
 // %token BREAK NIL
 // %token FUNCTION TYPE
 
@@ -38,6 +38,7 @@ exp:
   INT { Syntax.IntExp($1) }
 | STRING { Syntax.StringExp($1) }
 | ID { Syntax.VarExp($1) }
+| LPAREN exp RPAREN { $2 }
 | exp PLUS exp { Syntax.OpExp { left = $1; op = Syntax.PlusOp; right = $3} }
 | exp MINUS exp { Syntax.OpExp { left = $1; op = Syntax.MinusOp; right = $3} }
 | exp TIMES exp { Syntax.OpExp { left = $1; op = Syntax.TimesOp; right = $3} }
@@ -50,6 +51,8 @@ exp:
 | exp GE exp { Syntax.OpExp { left = $1; op = Syntax.GeOp; right = $3} }
 | LET decs IN exp END { Syntax.LetExp { decs = $2; body = $4 } }
 | ID LPAREN args RPAREN { Syntax.CallExp { id = $1; args = $3 } }
+| IF exp THEN exp { Syntax.IfExp { test = $2; then' = $4; else' = None } }
+| IF exp THEN exp ELSE exp { Syntax.IfExp { test = $2; then' = $4; else' = Some ($6) } }
 
 args:
   { [] } // 空の場合

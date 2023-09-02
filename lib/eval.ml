@@ -17,6 +17,15 @@ let rec f expr env: val_t * table =
                       env
                       decs
       in f body new_env
+  | Syntax.IfExp { test; then'; else' } ->
+      let v, env = f test env in
+      (match v with
+        | IntVal 1 -> f then' env
+        | IntVal 0 ->
+            (match else' with
+              | Some else' -> f else' env
+              | None -> (IntVal 0, env))
+        | _ -> failwith "type error")
   | Syntax.CallExp { id; args } ->
       (let func = List.assoc id env in
       match func with
@@ -30,7 +39,8 @@ let rec f expr env: val_t * table =
               | _ -> failwith "type error"
             in
             let new_env = get_args args env field_names in
-            f body new_env
+            let result, _ = f body new_env
+            in result, env
         | BuiltInFunction builtin_func ->
             (let rec eval_args args env =
               match args with

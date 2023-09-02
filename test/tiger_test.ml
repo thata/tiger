@@ -267,13 +267,38 @@ let () =
   Tiger.Eval.print_val (eval_with_env src env);
   print_newline ()
 
-(* 組み込み関数 print(s: string) の呼び出し *)
+(* if-then *)
 let () =
   let src = {|
     let in
-      print("Hello World!!")
+      if 1 = 1 then print("Hello World!!\n")
     end
   |}
   in
-  ignore(eval src);
+  ignore(eval src)
+
+(* if-then-else *)
+let () =
+  let src = {|
+    let in
+      if 1 = 0 then print("Hello World!!\n")
+      else print("Goodbye World!!\n")
+    end
+  |}
+  in
+  ignore(eval src)
+
+(* フィボナッチ数 *)
+let () =
+  let src = {|
+    let
+      function fib(n:int) =
+        if n < 2 then n
+        else fib(n-1) + fib(n-2)
+    in
+      fib(10)
+    end
+  |}
+  in print_string "result: ";
+  Tiger.Eval.print_val (eval src);
   print_newline ()
