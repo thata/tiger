@@ -26,9 +26,12 @@
 
 %type <Syntax.t> program
 
-%left EQ NEQ LT LE GT GE
+// see: https://kenichi-asai.github.io/lex-yacc/#else-%E3%81%AE%E3%81%AA%E3%81%84%E6%9D%A1%E4%BB%B6%E6%96%87
+%nonassoc THEN
+%nonassoc ELSE
 %left PLUS MINUS
 %left TIMES DIVIDE
+%nonassoc EQ NEQ LT LE GT GE
 
 // 文法規則の定義
 %%
