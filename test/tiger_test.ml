@@ -305,11 +305,28 @@ let () =
 (* 負の整数リテラル *)
 let () =
   let src = {|
-    let var a := -10
+    let var a := 20
     in -10 + -a
     end
   |}
   in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 逐次実行 *)
+let () =
+  let src = {|
+    (print("A");
+      print("B");
+      print("C");
+      print("\n"))
+  |}
+  in ignore(eval src)
+
+(* Unit を返す *)
+let () =
+  let src = "(    )" in
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()

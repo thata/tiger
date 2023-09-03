@@ -28,6 +28,13 @@ let rec f expr env: val_t * table =
               | Some else' -> f else' env
               | None -> (UnitVal, env))
         | _ -> failwith "type error")
+  | Syntax.SeqExp exprs ->
+    (match exprs with
+    | [] -> (UnitVal, env)
+    | expr::[] -> f expr env
+    | expr::exprs ->
+        let _, env = f expr env in
+        f (Syntax.SeqExp exprs) env)
   | Syntax.CallExp { id; args } ->
       (let func = List.assoc id env in
       match func with

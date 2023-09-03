@@ -10,7 +10,7 @@
 %token EQ NEQ LT LE GT GE
 %token LET IN END IF THEN ELSE
 %token VAR FUNCTION ASSIGN
-%token LPAREN RPAREN COMMA COLON
+%token LPAREN RPAREN COMMA COLON SEMICOLON
 %token EOF
 
 // あとで使う
@@ -40,9 +40,8 @@ program: exp EOF { $1 }
 exp:
   INT { Syntax.IntExp($1) }
 | STRING { Syntax.StringExp($1) }
-| LPAREN RPAREN { Syntax.UnitExp }
 | ID { Syntax.VarExp($1) }
-| LPAREN exp RPAREN { $2 }
+| LPAREN exps RPAREN { Syntax.SeqExp($2) }
 | exp PLUS exp { Syntax.OpExp { left = $1; op = Syntax.PlusOp; right = $3} }
 | exp MINUS exp { Syntax.OpExp { left = $1; op = Syntax.MinusOp; right = $3} }
 | exp TIMES exp { Syntax.OpExp { left = $1; op = Syntax.TimesOp; right = $3} }
@@ -58,6 +57,11 @@ exp:
 | ID LPAREN args RPAREN { Syntax.CallExp { id = $1; args = $3 } }
 | IF exp THEN exp { Syntax.IfExp { test = $2; then' = $4; else' = None } }
 | IF exp THEN exp ELSE exp { Syntax.IfExp { test = $2; then' = $4; else' = Some ($6) } }
+
+exps:
+  { [] } // 空の場合
+| exps exp { $1 @ [$2] }
+| exps SEMICOLON exp { $1 @ [$3] }
 
 args:
   { [] } // 空の場合
