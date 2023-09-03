@@ -64,7 +64,7 @@ let rec f expr env: val_t * table =
         | _ -> failwith "type error")
     | Syntax.OpExp { left; op; right } ->
       match op with
-      | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp ->
+      | Syntax.PlusOp | Syntax.MinusOp | Syntax.TimesOp | Syntax.DivideOp | Syntax.AndOp | Syntax.OrOp ->
           calc op left right env
       | Syntax.EqOp | Syntax.NeqOp | Syntax.LtOp | Syntax.GtOp | Syntax.LeOp | Syntax.GeOp ->
           compare op left right env
@@ -77,6 +77,10 @@ and calc op e1 e2 env =
   | Syntax.MinusOp, IntVal v1, IntVal v2 -> IntVal(v1 - v2), env
   | Syntax.TimesOp, IntVal v1, IntVal v2 -> IntVal(v1 * v2), env
   | Syntax.DivideOp, IntVal v1, IntVal v2 -> IntVal(v1 / v2), env
+  | Syntax.AndOp, IntVal v1, IntVal v2 ->
+      if v1 = 1 && v2 = 1 then IntVal(1), env else IntVal(0), env
+  | Syntax.OrOp, IntVal v1, IntVal v2 ->
+      if v1 = 1 || v2 = 1 then IntVal(1), env else IntVal(0), env
   | _ -> failwith "type error"
 
   and compare op e1 e2 env =

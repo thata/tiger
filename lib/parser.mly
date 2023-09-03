@@ -8,6 +8,7 @@
 %token <string> ID
 %token PLUS MINUS TIMES DIVIDE
 %token EQ NEQ LT LE GT GE
+%token AND OR
 %token LET IN END IF THEN ELSE
 %token VAR FUNCTION ASSIGN
 %token LPAREN RPAREN COMMA COLON SEMICOLON
@@ -16,7 +17,6 @@
 // あとで使う
 // %token COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK
 // %token LBRACE RBRACE DOT
-// %token AND OR
 // %token ARRAY WHILE FOR TO DO OF
 // %token BREAK NIL
 // %token FUNCTION TYPE
@@ -29,6 +29,7 @@
 // see: https://kenichi-asai.github.io/lex-yacc/#else-%E3%81%AE%E3%81%AA%E3%81%84%E6%9D%A1%E4%BB%B6%E6%96%87
 %nonassoc THEN
 %nonassoc ELSE
+%left AND OR
 %left PLUS MINUS
 %left TIMES DIVIDE
 %nonassoc EQ NEQ LT LE GT GE
@@ -47,6 +48,8 @@ exp:
 | exp MINUS exp { Syntax.OpExp { left = $1; op = Syntax.MinusOp; right = $3} }
 | exp TIMES exp { Syntax.OpExp { left = $1; op = Syntax.TimesOp; right = $3} }
 | exp DIVIDE exp { Syntax.OpExp { left = $1; op = Syntax.DivideOp; right = $3} }
+| exp AND exp { Syntax.OpExp { left = $1; op = Syntax.AndOp; right = $3} }
+| exp OR exp { Syntax.OpExp { left = $1; op = Syntax.OrOp; right = $3} }
 | exp EQ exp { Syntax.OpExp { left = $1; op = Syntax.EqOp; right = $3} }
 | exp NEQ exp { Syntax.OpExp { left = $1; op = Syntax.NeqOp; right = $3} }
 | exp LT exp { Syntax.OpExp { left = $1; op = Syntax.LtOp; right = $3} }

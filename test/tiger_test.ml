@@ -326,7 +326,43 @@ let () =
 
 (* Unit を返す *)
 let () =
-  let src = "(    )" in
+  let src = "()" in
   print_string "result: ";
   Tiger.Eval.print_val (eval src);
+  print_newline ()
+
+(* 論理積 (and) その1 *)
+let () =
+  print_string "result: ";
+  Tiger.Eval.print_val (eval "1 & 1"); (* => 1 *)
+  print_newline ()
+
+(* 論理積 (and) その2 *)
+let () =
+  print_string "result: ";
+  Tiger.Eval.print_val (eval "1 & 0"); (* => 0 *)
+  print_newline ()
+
+(* 論理積 (and) その3 *)
+let () =
+  print_string "result: ";
+  Tiger.Eval.print_val (eval "0 & 0"); (* => 1 *)
+  print_newline ()
+
+(* 論理和 (or) その1 *)
+let () =
+  print_string "result: ";
+  Tiger.Eval.print_val (eval "1 | 1"); (* => 1 *)
+  print_newline ()
+
+(* 論理和 (or) その2 *)
+let () =
+  print_string "result: ";
+  Tiger.Eval.print_val (eval "1 | 0"); (* => 1 *)
+  print_newline ()
+
+(* 論理和 (or) その3 *)
+let () =
+  print_string "result: ";
+  Tiger.Eval.print_val (eval "0 | 0"); (* => 0 *)
   print_newline ()

@@ -5,6 +5,8 @@ and op_t =
   | MinusOp
   | TimesOp
   | DivideOp
+  | AndOp
+  | OrOp
   | EqOp
   | NeqOp
   | LtOp

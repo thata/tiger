@@ -27,6 +27,8 @@ rule token = parse
   | "-" { Parser.MINUS }
   | "*" { Parser.TIMES }
   | "/" { Parser.DIVIDE }
+  | "&" { Parser.AND }
+  | "|" { Parser.OR }
   | "=" { Parser.EQ }
   | "<>" { Parser.NEQ }
   | "<" { Parser.LT }
