@@ -15,6 +15,7 @@ and op_t =
   and t =
   | IntExp of int (* 整数 *)
   | StringExp of string (* 文字列 *)
+  | UnitExp (* ユニット *)
   | LetExp of { decs: dec_t list; body: t }
   | VarExp of string
   | CallExp of { id: string; args: t list } (* 関数呼び出し *)

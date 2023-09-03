@@ -12,8 +12,7 @@ let eval src =
         match args with
         | [Tiger.Eval.StringVal(s)] ->
           print_string s;
-          (* NOTE: 本当は unit を返したいけどまだ未実装なので 0 を返してる *)
-          Tiger.Eval.IntVal(0)
+          Tiger.Eval.UnitVal
         | _ -> failwith "invalid arguments"
     ))
   ]

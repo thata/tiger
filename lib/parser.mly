@@ -40,6 +40,7 @@ program: exp EOF { $1 }
 exp:
   INT { Syntax.IntExp($1) }
 | STRING { Syntax.StringExp($1) }
+| LPAREN RPAREN { Syntax.UnitExp }
 | ID { Syntax.VarExp($1) }
 | LPAREN exp RPAREN { $2 }
 | exp PLUS exp { Syntax.OpExp { left = $1; op = Syntax.PlusOp; right = $3} }

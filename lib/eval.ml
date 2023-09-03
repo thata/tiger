@@ -3,6 +3,7 @@ and table = (id * val_t) list
 and val_t =
     IntVal of int
   | StringVal of string
+  | UnitVal
   | FunctionDec of id list * Syntax.t
   | BuiltInFunction of (val_t list -> table -> val_t)
 
@@ -10,6 +11,7 @@ let rec f expr env: val_t * table =
   match expr with
   | Syntax.IntExp n -> (IntVal n, env)
   | Syntax.StringExp s -> (StringVal s, env)
+  | Syntax.UnitExp -> (UnitVal, env)
   | Syntax.VarExp s -> (List.assoc s env, env)
   | Syntax.LetExp { decs; body } ->
       let new_env = List.fold_left
@@ -24,7 +26,7 @@ let rec f expr env: val_t * table =
         | IntVal 0 ->
             (match else' with
               | Some else' -> f else' env
-              | None -> (IntVal 0, env))
+              | None -> (UnitVal, env))
         | _ -> failwith "type error")
   | Syntax.CallExp { id; args } ->
       (let func = List.assoc id env in
@@ -103,6 +105,7 @@ and string_of_val v =
   match v with
     IntVal n -> string_of_int n
   | StringVal s -> s
+  | UnitVal -> "()"
   | FunctionDec _ -> "<fun>"
   | BuiltInFunction _ -> "<builtin>"
 
