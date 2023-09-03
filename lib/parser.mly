@@ -53,6 +53,7 @@ exp:
 | exp LE exp { Syntax.OpExp { left = $1; op = Syntax.LeOp; right = $3} }
 | exp GT exp { Syntax.OpExp { left = $1; op = Syntax.GtOp; right = $3} }
 | exp GE exp { Syntax.OpExp { left = $1; op = Syntax.GeOp; right = $3} }
+| MINUS exp { Syntax.OpExp { left = Syntax.IntExp(0); op = Syntax.MinusOp; right = $2} }
 | LET decs IN exp END { Syntax.LetExp { decs = $2; body = $4 } }
 | ID LPAREN args RPAREN { Syntax.CallExp { id = $1; args = $3 } }
 | IF exp THEN exp { Syntax.IfExp { test = $2; then' = $4; else' = None } }

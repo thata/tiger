@@ -301,3 +301,15 @@ let () =
   in print_string "result: ";
   Tiger.Eval.print_val (eval src);
   print_newline ()
+
+(* 負の整数リテラル *)
+let () =
+  let src = {|
+    let var a := -10
+    in -10 + -a
+    end
+  |}
+  in
+  print_string "result: ";
+  Tiger.Eval.print_val (eval src);
+  print_newline ()
